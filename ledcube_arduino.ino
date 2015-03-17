@@ -2,7 +2,7 @@
 //
 // I'm using :
 // - an ATMEGA328 with the Duemilanove bootloader
-// - 8 74HC168 shift registers to drive the 64 columns
+// - 8 74HC164 shift registers to drive the 64 columns
 // - 8 NPN transistors to drive the lines
 
 
@@ -22,7 +22,7 @@ const byte reg_wiring[8][8][2]={
 {{6,1},{6,2},{6,3},{6,0},{7,7},{7,4},{7,5},{7,6}},
 {{6,4},{6,5},{6,6},{6,7},{7,0},{7,1},{7,2},{7,3}}};
 
-const int scanDelay1 = 10, scanDelay2=0;  // Delays for the floors scanning ...
+const int scanDelay1 = 50, scanDelay2=0;  // Delays for the floors scanning ...
 
 // Cube variables
 byte leds_state[8][8]={0}; // Buffer to store all the leds state, working by columns
@@ -76,13 +76,14 @@ void refreshLeds() {
       } 
       // Turn on the current floor, wait for some time and then turn it off 
       // This would normally be done with the "shiftOut8();", it was initially a mistake, but it works well like that :3
+      
+      //delayMicroseconds(scanDelay2);  // An unused delay that can be used to dim the light intensity
+    }
       digitalWrite(floors[i], 1);
       delayMicroseconds(scanDelay1);    
       digitalWrite(floors[i], 0);
-      //delayMicroseconds(scanDelay2);  // An unused delay that can be used to dim the light intensity
-    }
-    // Send the data_buffer values to the shift registers
-    shiftOut8();
+      // Send the data_buffer values to the shift registers
+      shiftOut8();
   }
 }
 // A modification of the original Arduino shiftOut() function to send data simultaneously on 8 pins
